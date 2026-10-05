@@ -1,0 +1,6 @@
+---
+- name: Restart slurmctld
+  ansible.builtin.service:
+    name: slurmctld
+    state: restarted
+  listen: slurm config changed

@@ -1,0 +1,40 @@
+---
+- name: Load OS-specific variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Create slurm group with fixed GID
+  ansible.builtin.group:
+    name: slurm
+    gid: 980
+    system: true
+
+- name: Create slurm user with fixed UID
+  ansible.builtin.user:
+    name: slurm
+    uid: 980
+    group: slurm
+    system: true
+    shell: /sbin/nologin
+    create_home: false
+
+- name: Install slurm packages
+  ansible.builtin.package:
+    name: "{{ slurm_packages }}"
+    state: present
+
+- name: Ensure slurm config directory exists
+  ansible.builtin.file:
+    path: /etc/slurm
+    state: directory
+    owner: slurm
+    group: slurm
+    mode: '0755'
+    
+- name: Deploy slurm.conf
+  ansible.builtin.template:
+    src: slurm.conf.j2
+    dest: /etc/slurm/slurm.conf
+    owner: slurm
+    group: slurm
+    mode: '0644'
+  notify: slurm config changed

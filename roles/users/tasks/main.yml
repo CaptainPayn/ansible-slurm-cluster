@@ -1,0 +1,27 @@
+---
+- name: Create slurmuser group with fixed GID
+  ansible.builtin.group:
+    name: slurmuser
+    gid: "{{ slurmuser_uid }}"
+
+- name: Create slurmuser with fixed UID
+  ansible.builtin.user:
+    name: slurmuser
+    uid: "{{ slurmuser_uid }}"
+    group: slurmuser
+    home: /home/slurmuser
+    shell: /bin/bash
+    create_home: false
+
+- name: Read slurmuser passwd file
+  ansible.builtin.getent:
+    database: passwd
+    key: slurmuser
+
+- name: Verify slurmuser UID and GID
+  ansible.builtin.assert:
+    that:
+      - getent_passwd['slurmuser'][1] | int == slurmuser_uid
+      - getent_passwd['slurmuser'][2] | int == slurmuser_uid
+    fail_msg: "slurmuser UID/GID does not match {{ slurmuser_uid }}"
+    quiet: true

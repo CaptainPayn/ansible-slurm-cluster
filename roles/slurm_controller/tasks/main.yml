@@ -1,0 +1,14 @@
+---
+- name: Create slurmctld state directory
+  ansible.builtin.file:
+    path: /var/spool/slurmctld
+    state: directory
+    owner: slurm
+    group: slurm
+    mode: '0755'
+
+- name: Enable and start slurmctld
+  ansible.builtin.service:
+    name: slurmctld
+    state: started
+    enabled: true

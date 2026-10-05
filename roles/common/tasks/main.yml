@@ -1,0 +1,25 @@
+---
+- name: Enable EPEL on RedHat family
+  ansible.builtin.package:
+    name: epel-release
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Install chrony
+  ansible.builtin.package:
+    name: chrony
+    state: present
+
+- name: Enable and start chronyd
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true
+  when: ansible_os_family == "RedHat"
+
+- name: Enable and start chrony
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: true
+  when: ansible_os_family == "Debian"

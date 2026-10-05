@@ -1,0 +1,24 @@
+---
+- name: Configure firewalld (rhel)
+  when: ansible_os_family == "RedHat"
+  block:
+    - name: Ensure firewalld is installed
+      ansible.builtin.package:
+        name: firewalld
+        state: present
+
+    - name: Ensure firewalld is running
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Open slurm ports
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        permanent: true
+        state: enabled
+      loop:
+        - 6817-6818/tcp
+        - 60001-63000/tcp
+      notify: Reload firewalld

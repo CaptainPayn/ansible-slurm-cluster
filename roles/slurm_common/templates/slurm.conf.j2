@@ -1,0 +1,38 @@
+# ======================================
+# slurm.conf - managed by ansible
+# ======================================
+
+ClusterName=hpc_cluster
+SlurmctldHost={{ groups['slurm_head'][0] }}
+
+# security & auth
+AuthType=auth/munge
+SlurmUser=slurm
+
+# ports
+SlurmctldPort=6817
+SlurmdPort=6818
+SrunPortRange=60001-63000
+
+# process tracking (no cgroups for now)
+ProctrackType=proctrack/linuxproc
+TaskPlugin=task/none
+
+# logs & state
+SlurmctldLogFile=/var/log/slurm/slurmctld.log
+SlurmdLogFile=/var/log/slurm/slurmd.log
+StateSaveLocation=/var/spool/slurmctld
+SlurmdSpoolDir=/var/spool/slurmd
+
+# scheduling
+SchedulerType=sched/backfill
+SelectType=select/cons_tres
+ReturnToService=2
+
+# compute nodes from slurm_nodes in group_vars/all.yml
+{% for node in slurm_nodes %}
+NodeName={{ node.name }} CPUs={{ node.cpus }} RealMemory={{ node.real_memory }} State=UNKNOWN
+{% endfor %}
+
+# partition
+PartitionName={{ slurm_partition_name }} Nodes={{ slurm_nodes | map(attribute='name') | join(',') }} Default=YES MaxTime=INFINITE State=UP

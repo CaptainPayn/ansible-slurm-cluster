@@ -1,1 +1,1 @@
-slurm_packages: [slurm]
+slurm_packages: [slurm-slurmd]

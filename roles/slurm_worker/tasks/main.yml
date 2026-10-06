@@ -7,6 +7,15 @@
     group: slurm
     mode: '0755'
 
+- name: Deploy cgroup.conf to workers
+  ansible.builtin.copy:
+    src: /etc/slurm/cgroup.conf
+    dest: /etc/slurm/cgroup.conf
+    owner: slurm
+    group: slurm
+    mode: '0644'
+  notify: Restart slurmd
+
 - name: Enable and start slurmd
   ansible.builtin.service:
     name: slurmd

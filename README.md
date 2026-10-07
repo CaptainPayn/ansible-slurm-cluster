@@ -4,5 +4,5 @@
 dd if=/dev/urandom bs=1 count=1024 of=roles/munge/files/munge.key
 ```
 
-## updated slurm package name for RedHat
+## updated slurm install from nfs
 ## added cgroup deploy

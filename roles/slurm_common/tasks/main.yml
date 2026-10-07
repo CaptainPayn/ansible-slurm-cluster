@@ -17,10 +17,12 @@
     shell: /sbin/nologin
     create_home: false
 
-- name: Install slurm packages
-  ansible.builtin.package:
+- name: Install slurm packages from nfs directory
+  ansible.builtin.dnf:
     name: "{{ slurm_packages }}"
+    disable_gpg_check: yes
     state: present
+  when: ansible_os_family == "RedHat"
 
 - name: Ensure slurm config directory exists
   ansible.builtin.file:

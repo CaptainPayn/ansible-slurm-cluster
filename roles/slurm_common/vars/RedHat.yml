@@ -1,1 +1,5 @@
-slurm_packages: [slurm-slurmd]
+---
+slurm_packages:
+  - /home/slurmuser/rpmbuild/RPMS/x86_64/slurm-24.11.5-1.el9.x86_64.rpm
+  - /home/slurmuser/rpmbuild/RPMS/x86_64/slurm-libpmi-24.11.5-1.el9.x86_64.rpm
+  - /home/slurmuser/rpmbuild/RPMS/x86_64/slurm-slurmd-24.11.5-1.el9.x86_64.rpm

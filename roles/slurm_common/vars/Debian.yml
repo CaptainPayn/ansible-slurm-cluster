@@ -1,1 +1,3 @@
-slurm_packages: [slurm-wlm]
+slurm_packages:
+  - /home/slurmuser/deb-build/slurm-wlm-basic-plugins_24.11.5-4_amd64.deb
+  - /home/slurmuser/deb-build/slurmd_24.11.5-4_amd64.deb

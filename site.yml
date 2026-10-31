@@ -1,4 +1,9 @@
 ---
+- name: Gather facts from all nodes
+  hosts: slurm_cluster
+  gather_facts: true
+  tasks: []
+
 - name: Configure Slurm Cluster Controller
   hosts: slurm_head
   become: true

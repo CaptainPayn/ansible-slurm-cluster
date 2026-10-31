@@ -1,6 +1,6 @@
 ---
 - name: Configure NFS server
-  when: inventory_hostname in groups['slurm_head']
+  when: inventory_hostname in groups['nfs_server']
   block:
     - name: Install NFS server packages
       ansible.builtin.package:
@@ -9,17 +9,17 @@
 
     - name: Ensure export directory exists
       ansible.builtin.file:
-        path: /home/slurmuser
+        path: "{{ nfs_export_path }}"
         state: directory
-        owner: slurmuser
-        group: slurmuser
+        owner: "{{ nfs_export_owner }}"
+        group: "{{ nfs_export_group }}"
         mode: '0755'
 
     - name: Deploy /etc/exports
       ansible.builtin.copy:
         dest: /etc/exports
         content: |
-          /home/slurmuser *(rw,sync,no_subtree_check,no_root_squash)
+          {{ nfs_export_path }} {{ nfs_export_clients }}({{ nfs_export_options }})
         owner: root
         group: root
         mode: '0644'
@@ -32,7 +32,7 @@
         enabled: true
 
 - name: Configure NFS clients
-  when: inventory_hostname not in groups['slurm_head']
+  when: inventory_hostname not in groups['nfs_server']
   block:
     - name: Install NFS client packages
       ansible.builtin.package:
@@ -41,8 +41,8 @@
 
     - name: Mount slurmuser home from the head node
       ansible.posix.mount:
-        src: "{{ nfs_server_addr }}:/home/slurmuser"
-        path: /home/slurmuser
+        src: "{{ nfs_server_addr }}:{{ nfs_export_path }}"
+        path: "{{ nfs_export_path }}"
         fstype: nfs
-        opts: defaults,_netdev
+        opts: "{{ nfs_mount_opts }}"
         state: mounted

@@ -3,22 +3,17 @@
 slurm_partition_name: "debug"
 
 slurmuser_uid: 1100
-nfs_server_addr: 192.168.122.225
+nfs_server_addr: "{{ groups['nfs_server'][0] }}"
+nfs_export_clients: "192.168.122.0/24"
 
 slurm_nodes:
   - name: "rocky-server"
     cpus: 2
-    real_memory: 1451
+    real_memory: 1400
   - name: "rocky01"
     cpus: 2
-    real_memory: 1700
-  - name: "rocky02"
-    cpus: 2
-    real_memory: 1700
+    real_memory: 1400
   - name: "ubuntu01"
-    cpus: 2
-    real_memory: 1700
-  - name: "ubuntu02"
     cpus: 2
     real_memory: 1700
 

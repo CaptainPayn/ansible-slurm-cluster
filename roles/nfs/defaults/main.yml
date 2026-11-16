@@ -1,7 +1,4 @@
 ---
-slurm_user: "slurmuser"
-slurm_shared_home: "/home/{{ slurm_user }}"
-
 nfs_export_path: "{{ slurm_shared_home }}"
 nfs_export_owner: "{{ slurm_user }}"
 nfs_export_group: "{{ slurm_user }}"

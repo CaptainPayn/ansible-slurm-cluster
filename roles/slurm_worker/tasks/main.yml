@@ -9,7 +9,7 @@
 
 - name: Deploy cgroup.conf to workers
   ansible.builtin.copy:
-    src: "{{ slurm_conf_dir }}/cgroup.conf"
+    src: cgroup.conf
     dest: "{{ slurm_conf_dir }}/cgroup.conf"
     owner: slurm
     group: slurm

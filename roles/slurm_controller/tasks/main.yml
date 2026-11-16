@@ -1,7 +1,7 @@
 ---
 - name: Create slurmctld state directory
   ansible.builtin.file:
-    path: /var/spool/slurmctld
+    path: "{{ slurm_state_dir }}"
     state: directory
     owner: slurm
     group: slurm

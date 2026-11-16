@@ -1,7 +1,7 @@
 ---
 - name: Create slurmd spool directory
   ansible.builtin.file:
-    path: /var/spool/slurmd
+    path: "{{ slurmd_spool_dir }}"
     state: directory
     owner: slurm
     group: slurm
@@ -9,8 +9,8 @@
 
 - name: Deploy cgroup.conf to workers
   ansible.builtin.copy:
-    src: /etc/slurm/cgroup.conf
-    dest: /etc/slurm/cgroup.conf
+    src: "{{ slurm_conf_dir }}/cgroup.conf"
+    dest: "{{ slurm_conf_dir }}/cgroup.conf"
     owner: slurm
     group: slurm
     mode: '0644'

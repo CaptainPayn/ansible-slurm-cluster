@@ -6,18 +6,18 @@
 
 - name: Ensure /etc/munge permissions
   ansible.builtin.file:
-    path: /etc/munge
+    path: "{{ munge_path }}"
     state: directory
-    owner: munge
-    group: munge
+    owner: "{{ munge_path_owner }}"
+    group: "{{ munge_path_group }}"
     mode: '0700'
 
 - name: Deploy munge key
   ansible.builtin.copy:
     src: munge.key
-    dest: /etc/munge/munge.key
-    owner: munge
-    group: munge
+    dest: "{{ munge_key_dest }}"
+    owner: "{{ munge_path_owner }}"
+    group: "{{ munge_path_group }}"
     mode: '0400'
   notify: Restart munge
 

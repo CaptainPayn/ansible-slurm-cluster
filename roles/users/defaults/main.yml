@@ -1,0 +1,4 @@
+---
+slurm_user: "slurmuser"
+slurmuser_uid: 1100
+slurm_shared_home: "/home/{{ slurm_user }}"

@@ -1,4 +1,6 @@
-slurm_packages:
-  - /home/slurmuser/deb-build/slurm-wlm-basic-plugins_24.11.5-4_amd64.deb
-  - /home/slurmuser/deb-build/slurmd_24.11.5-4_amd64.deb
-  - /home/slurmuser/deb-build/slurm-client_24.11.5-4_amd64.deb
+---
+slurm_pkg_dir: "{{ slurm_shared_home }}/deb-build"
+slurm_pkg_patterns:
+  - "slurm-wlm-basic-plugins_*.deb"
+  - "slurm-client_*.deb"
+  - "slurmd_*.deb"

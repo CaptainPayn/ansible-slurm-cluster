@@ -1,0 +1,14 @@
+---
+slurmctld_port: "6817"
+slurmd_port: "6818"
+srun_port_range: "60001-63000"
+
+firewall_tcp_ports:
+  - "22"
+  - "{{ slurmctld_port }}-{{ slurmd_port }}"
+  - "{{ srun_port_range }}"
+
+firewall_nfs_services:
+  - nfs
+  - rpc-bind
+  - mountd

@@ -39,7 +39,7 @@
         name: "{{ 'nfs-utils' if ansible_os_family == 'RedHat' else 'nfs-common' }}"
         state: present
 
-    - name: Mount slurmuser home from the head node
+    - name: Mount {{ slurm_user }} home from the head node
       ansible.posix.mount:
         src: "{{ nfs_server_addr }}:{{ nfs_export_path }}"
         path: "{{ nfs_export_path }}"

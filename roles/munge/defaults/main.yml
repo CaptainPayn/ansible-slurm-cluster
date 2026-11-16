@@ -1,0 +1,5 @@
+---
+munge_path: /etc/munge
+munge_path_owner: munge
+munge_path_group: munge
+munge_key_dest: /etc/munge/munge.key

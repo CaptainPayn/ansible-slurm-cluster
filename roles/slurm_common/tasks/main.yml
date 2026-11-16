@@ -17,19 +17,43 @@
     shell: /sbin/nologin
     create_home: false
 
-- name: Install rhel slurm packages from nfs directory
+- name: Find compiled Slurm packages for {{ ansible_os_family }}
+  ansible.builtin.find:
+    paths: "{{ slurm_pkg_dir }}"
+    patterns: "{{ slurm_pkg_patterns }}"
+  register: found_slurm_pkgs
+
+- name: Verify slurm packages were found
+  ansible.builtin.assert:
+    that:
+      - found_slurm_pkgs.matched == (slurm_pkg_patterns | length)
+    fail_msg: "Expected {{ slurm_pkg_patterns | length }} packages in {{ slurm_pkg_dir }}, found {{ found_slurm_pkgs.matched }}"
+
+- name: Install rhel slurm packages from NFS directory
   ansible.builtin.dnf:
-    name: "{{ slurm_packages }}"
-    disable_gpg_check: yes
+    name: "{{ found_slurm_pkgs.files | map(attribute='path') | list }}"
+    disable_gpg_check: true
     state: present
   when: ansible_os_family == "RedHat"
 
-- name: Install deb slurm packages from nfs dir
+- name: Prevent ubuntu upstream repos from overriding local slurm builds
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/slurm-pin
+    content: |
+      Package: slurm* slurmd slurmctld slurmdbd libslurm*
+      Pin: release o=Ubuntu
+      Pin-Priority: -1
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_os_family == "Debian"
+
+- name: Install debian/ubuntu slurm packages from NFS directory
   ansible.builtin.apt:
     deb: "{{ item }}"
     state: present
-  loop: "{{ slurm_packages }}"
-  become: true
+    allow_downgrade: true
+  loop: "{{ found_slurm_pkgs.files | map(attribute='path') | list }}"
   when: ansible_os_family == "Debian"
 
 - name: Ensure slurm config directory exists

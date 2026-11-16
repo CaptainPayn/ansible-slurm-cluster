@@ -1,15 +1,26 @@
 ---
-- name: Gather facts from all nodes
+- name: Configure base cluster infrastructure
   hosts: slurm_cluster
+  become: true
   gather_facts: true
-  tasks: []
+  roles:
+    - common
+    - users
+    - firewall
+    - munge
+    - nfs
+    - slurm_common
 
 - name: Configure Slurm Cluster Controller
   hosts: slurm_head
   become: true
-  roles: [common, users, firewall, munge, nfs, slurm_common, slurm_controller]
+  gather_facts: false
+  roles:
+    - slurm_controller
 
 - name: Configure Slurm Worker Nodes
   hosts: slurm_workers
   become: true
-  roles: [common, users, firewall, munge, nfs, slurm_common, slurm_worker]
+  gather_facts: false
+  roles:
+    - slurm_worker

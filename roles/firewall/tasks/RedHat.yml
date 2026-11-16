@@ -1,0 +1,30 @@
+---
+- name: Ensure firewalld is installed
+  ansible.builtin.dnf:
+    name: firewalld
+    state: present
+
+- name: Ensure firewalld is running
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Open slurm and ssh tcp ports in firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}/tcp"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ firewall_tcp_ports }}"
+  notify: Reload firewalld
+
+- name: Open nfs services on nfs server in firewalld
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ firewall_nfs_services }}"
+  when: inventory_hostname in groups['nfs_server']
+  notify: Reload firewalld

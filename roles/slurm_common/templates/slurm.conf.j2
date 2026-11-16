@@ -2,27 +2,27 @@
 # slurm.conf - managed by ansible
 # ======================================
 
-ClusterName=hpc_cluster
+ClusterName={{ slurm_cluster_name | default('hpc_cluster') }}
 SlurmctldHost={{ groups['slurm_head'][0] }}
 
 # security & auth
 AuthType=auth/munge
-SlurmUser=slurm
+SlurmUser={{ slurm_daemon_user | default('slurm') }}
 
 # ports
-SlurmctldPort=6817
-SlurmdPort=6818
-SrunPortRange=60001-63000
+SlurmctldPort={{ slurmctld_port | default(6817) }}
+SlurmdPort={{ slurmd_port | default(6818) }}
+SrunPortRange={{ srun_port_range | default('60001-63000') }}
 
 # process tracking
 ProctrackType=proctrack/linuxproc
 TaskPlugin=task/none
 
 # logs & state
-SlurmctldLogFile=/var/log/slurm/slurmctld.log
-SlurmdLogFile=/var/log/slurm/slurmd.log
-StateSaveLocation=/var/spool/slurmctld
-SlurmdSpoolDir=/var/spool/slurmd
+SlurmctldLogFile={{ slurm_log_dir | default('/var/log/slurm') }}/slurmctld.log
+SlurmdLogFile={{ slurm_log_dir | default('/var/log/slurm') }}/slurmd.log
+StateSaveLocation={{ slurm_state_dir | default('/var/spool/slurmctld') }}
+SlurmdSpoolDir={{ slurmd_spool_dir | default('/var/spool/slurmd') }}
 
 # scheduling
 SchedulerType=sched/backfill
@@ -30,9 +30,9 @@ SelectType=select/cons_tres
 ReturnToService=2
 
 # compute nodes from slurm_nodes in group_vars/all.yml
-{% for node in slurm_nodes %}
-NodeName={{ node.name }} CPUs={{ node.cpus }} RealMemory={{ node.real_memory }} State=UNKNOWN
+{% for host in groups['slurm_workers'] %}
+NodeName={{ host }} CPUs={{ hostvars[host]['ansible_processor_vcpus'] }} RealMemory={{ (hostvars[host]['ansible_memtotal_mb'] * (slurm_mem_usable_ratio | default(0.85))) | int }} State=UNKNOWN
 {% endfor %}
 
 # partition
-PartitionName={{ slurm_partition_name }} Nodes={{ slurm_nodes | map(attribute='name') | join(',') }} Default=YES MaxTime=INFINITE State=UP
+PartitionName={{ slurm_partition_name | default('debug') }} Nodes={{ groups['slurm_workers'] | join(',') }} Default=YES MaxTime=INFINITE State=UP

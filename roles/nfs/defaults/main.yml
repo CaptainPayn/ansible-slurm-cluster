@@ -1,7 +1,10 @@
 ---
-nfs_export_path: /home/slurmuser
-nfs_export_owner: slurmuser
-nfs_export_group: slurmuser
+slurm_user: "slurmuser"
+slurm_shared_home: "/home/{{ slurm_user }}"
+
+nfs_export_path: "{{ slurm_shared_home }}"
+nfs_export_owner: "{{ slurm_user }}"
+nfs_export_group: "{{ slurm_user }}"
 nfs_export_clients: "*"
-nfs_export_options: rw,sync,no_subtree_check,no_root_squash
-nfs_mount_opts: defaults,_netdev
+nfs_export_options: "rw,sync,no_subtree_check,no_root_squash"
+nfs_mount_opts: "defaults,_netdev"

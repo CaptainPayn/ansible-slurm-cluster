@@ -1,19 +1,17 @@
 ---
 
 slurm_partition_name: "debug"
+slurm_conf_dir: "/etc/slurm"
+slurm_log_dir: "/var/log/slurm"
+slurm_state_dir: "/var/spool/slurmctld"
+slurmd_spool_dir: "/var/spool/slurmd"
 
+slurmctld_port: 6817
+slurmd_port: 6818
+srun_port_range: "60001-63000"
+slurm_user: "slurmuser"
 slurmuser_uid: 1100
+slurm_shared_home: "/home/{{ slurm_user }}"
 nfs_server_addr: "{{ groups['nfs_server'][0] }}"
 nfs_export_clients: "192.168.122.0/24"
-
-slurm_nodes:
-  - name: "rocky-server"
-    cpus: 2
-    real_memory: 1400
-  - name: "rocky01"
-    cpus: 2
-    real_memory: 1400
-  - name: "ubuntu01"
-    cpus: 2
-    real_memory: 1700
-
+slurm_mem_usable_ratio: 0.85

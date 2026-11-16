@@ -1,27 +1,29 @@
 ---
-- name: Create slurmuser group with fixed GID
+- name: Create shared batch group with fixed GID
   ansible.builtin.group:
-    name: slurmuser
+    name: "{{ slurm_user }}"
     gid: "{{ slurmuser_uid }}"
+    state: present
 
-- name: Create slurmuser with fixed UID
+- name: Create shared batch user with fixed UID
   ansible.builtin.user:
-    name: slurmuser
+    name: "{{ slurm_user }}"
     uid: "{{ slurmuser_uid }}"
-    group: slurmuser
-    home: /home/slurmuser
+    group: "{{ slurm_user }}"
+    home: "{{ slurm_shared_home }}"
     shell: /bin/bash
-    create_home: false
+    create_home: "{{ inventory_hostname in groups['nfs_server'] }}"
+    state: present
 
-- name: Read slurmuser passwd file
+- name: Read batch user passwd entry
   ansible.builtin.getent:
     database: passwd
-    key: slurmuser
+    key: "{{ slurm_user }}"
 
-- name: Verify slurmuser UID and GID
+- name: Verify batch user UID and GID match across cluster
   ansible.builtin.assert:
     that:
-      - getent_passwd['slurmuser'][1] | int == slurmuser_uid
-      - getent_passwd['slurmuser'][2] | int == slurmuser_uid
-    fail_msg: "slurmuser UID/GID does not match {{ slurmuser_uid }}"
+      - getent_passwd[slurm_user][1] | int == slurmuser_uid
+      - getent_passwd[slurm_user][2] | int == slurmuser_uid
+    fail_msg: "{{ slurm_user }} UID/GID does not match {{ slurmuser_uid }}"
     quiet: true

@@ -9,6 +9,7 @@ slurmd_spool_dir: "/var/spool/slurmd"
 slurmctld_port: 6817
 slurmd_port: 6818
 srun_port_range: "60001-63000"
+slurm_uid: 980
 slurm_user: "slurmuser"
 slurmuser_uid: 1100
 slurm_shared_home: "/home/{{ slurm_user }}"

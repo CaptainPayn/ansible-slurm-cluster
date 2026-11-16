@@ -1,0 +1,6 @@
+---
+slurm_uid: 980
+slurm_conf_dir: "/etc/slurm"
+slurm_log_dir: "/var/log/slurm"
+slurm_state_dir: "/var/spool/slurmctld"
+slurmd_spool_dir: "/var/spool/slurmd"

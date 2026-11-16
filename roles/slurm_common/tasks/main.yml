@@ -5,13 +5,13 @@
 - name: Create slurm group with fixed GID
   ansible.builtin.group:
     name: slurm
-    gid: 980
+    gid: "{{ slurm_uid }}"
     system: true
 
 - name: Create slurm user with fixed UID
   ansible.builtin.user:
     name: slurm
-    uid: 980
+    uid: "{{ slurm_uid }}"
     group: slurm
     system: true
     shell: /sbin/nologin
@@ -58,7 +58,7 @@
 
 - name: Ensure slurm config directory exists
   ansible.builtin.file:
-    path: /etc/slurm
+    path: "{{ slurm_conf_dir }}"
     state: directory
     owner: slurm
     group: slurm
@@ -67,7 +67,7 @@
 - name: Deploy slurm.conf
   ansible.builtin.template:
     src: slurm.conf.j2
-    dest: /etc/slurm/slurm.conf
+    dest: "{{ slurm_conf_dir }}/slurm.conf"
     owner: slurm
     group: slurm
     mode: '0644'

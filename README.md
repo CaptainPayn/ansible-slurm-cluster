@@ -8,15 +8,19 @@
 ## users --> target group: slurm_cluster
 * creates slurmuser account with identical uid and gid across rhel or deb so nfs file ownership matches everywhere
 ## nfs --> target group: slurm_cluster
-* configures /etc/nfs-server and starts nfs-server then mounts via fstab on all other nodes
+* configures /etc/exports and starts nfs-server then mounts via fstab on all other nodes
 ## firewall --> target group: slurm_cluster
 * branches by ansible_os_family; firewalld and ufw, ssh, slurm daemons, srun ports, and nfs traffic
 ## munge --> target_group: slurm_cluster
+* installs munge distributes shared key and enables munge
 ## slurm_common --> target group: slurm_cluster
+* creates slurm daemon user/group, discovers rpm and deb builds on nfs share, pins ubuntu version, renders slurm.conf from slurm.conf.j2
 ## slurm_controller --> target group: slurm_head
+* creates /var/spool/slurmctld and /var/log/slurm, enables slurmctld, listens for config change
 ## slurm_worker --> target group: slurm_workers
+* creates /var/spool/slurmd, copies cgroup.conf, enables slurmd, listens for slurm config change
 
-* you must generate munge key before running it
+* you must generate unique munge.key first
 ```bash
 dd if=/dev/urandom bs=1 count=1024 of=roles/munge/files/munge.key
 ```
@@ -24,7 +28,4 @@ dd if=/dev/urandom bs=1 count=1024 of=roles/munge/files/munge.key
 ```bash
 ansible-playbook site.yml
 ```
-* you can optionally pass in `--limit hostname` to just run it against one node
-
-* updated slurm install from nfs
-* added cgroup deploy
+* you can optionally pass in `--limit hostname` to target single node (when adding a new worker run the full `ansible-playbook site.yml` so slurm.conf.j2 gets node facts)
